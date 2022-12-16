@@ -1,6 +1,19 @@
-apply plugin: 'jacoco'
-apply plugin: 'java'
-apply plugin: 'checkstyle'
+plugins {
+    id 'io.spring.dependency-management' version '1.0.14.RELEASE'
+    id 'java'
+    id "org.sonarqube" version "3.4.0.2513"
+    id "java-library"
+    id "maven-publish"
+    id "application"
+    id "checkstyle"
+    id "jacoco"
+}
+
+
+group = 'jalau.at18'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = "11"
+
 
 repositories {
     mavenCentral()
@@ -8,6 +21,25 @@ repositories {
 
 dependencies {
     testImplementation 'junit:junit:4.12'
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            name 'nexus'
+            url nexusUrl
+            allowInsecureProtocol true
+            credentials {
+                username nexusUser
+                password nexusPassword
+            }
+        }
+    }
 }
 
 test {
@@ -20,14 +52,17 @@ test {
     }
 }
 
-checkstyle {
-    checkstyleMain.source = "src/main/"
-    checkstyleMain.excludes = ["**/src/test/**"]
-}
 
-checkstyleMain {
+//checkstyle {
+//    checkstyleMain.source = "src/main/"
+//    checkstyleMain.excludes = ["**/src/test/**"]
+//}
+
+/*checkstyleMain {
     source = 'src/main/java'
 }
+*/
+
 
 jacocoTestReport {
     afterEvaluate {
@@ -37,9 +72,10 @@ jacocoTestReport {
     }
 }
 
-test.finalizedBy("checkstyleMain")
+//test.finalizedBy("checkstyleMain")
 test.finalizedBy("jacocoTestReport")
 
+/*
 task runhighestlowestSergio (dependsOn: 'classes', type: JavaExec) {
     main = 'jalau.at18.katas.highestlowest.sergio.Main'
     classpath = sourceSets.main.runtimeClasspath
@@ -272,4 +308,5 @@ task runTeam4Game2048 (dependsOn: 'classes', type: JavaExec) {
     standardInput=System.in
     classpath = sourceSets.main.runtimeClasspath
 }
+ */
 
